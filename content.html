@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FRR Happy New Year</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            background: linear-gradient(135deg, #4b0082, #1c1c1c);
+            color: #fca9e5;
+            text-align: center;
+            height: 100vh;
+            overflow: hidden; /* Prevents scrollbars */
+            position: relative;
+        }
+
+        h1 {
+            font-size: 2em; /* Title size */
+            text-shadow: 3px 3px 7px #a64ac9;
+            position: absolute;
+            top: 20px;
+            width: 100%;
+        }
+
+        /* Center the messages in the middle of the page */
+        .messages-box {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            width: 80%; /* Ensure full width but not too wide */
+        }
+
+        /* Adjust message appearance */
+        .hidden-message {
+            font-size: 1.5em;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.5s ease-in-out;
+            margin: 10px 0; /* Spacing between messages */
+            position: absolute; /* Ensures all messages overlap in the same position */
+        }
+
+        
+        .visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .disappear {
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 1s ease-out;
+        }
+
+        /* Place buttons at the bottom of the page */
+        .buttons-container {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .message-btn, .play-btn {
+            font-size: 1.5em;
+            padding: 10px 20px;
+            background-color: #a64ac9;
+            color: #fca9e5;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            box-shadow: 0px 0px 10px #ff69b4;
+            margin-top: 20px; /* Space between buttons */
+            transition: all 0.5s ease-in-out; /* Button click effect */
+        }
+
+        .message-btn:active, .play-btn:active {
+            transform: scale(0.9); /* Shrinks the button when clicked */
+        }
+
+        .message-btn {
+            display: none; /* Hide the message button initially */
+        }
+
+        .hidden {
+            opacity: 0; /* Hidden state for fade-out effect */
+            transform: translateY(20px); /* Slide down effect when hiding */
+        }
+
+        .visible {
+            opacity: 1; /* Visible state for fade-in effect */
+            transform: translateY(0); /* Reset position when showing */
+        }
+
+        /* Firework background effect */
+        .firework {
+            position: absolute;
+            width: 5px;
+            height: 5px;
+            background: radial-gradient(circle, rgba(255,255,255,1) 0%, rgba(255,255,255,0) 80%);
+            border-radius: 50%;
+            animation: explode 1s ease-in-out forwards;
+            pointer-events: none; /* Makes sure the firework doesn't block other interactions */
+        }
+
+        @keyframes explode {
+            0% { transform: scale(0); opacity: 1; }
+            100% { transform: scale(10); opacity: 0; }
+        }
+
+        /* Firework rocket animation */
+        .rocket {
+            position: absolute;
+            width: 5px;
+            height: 20px;
+            background: white;
+            border-radius: 50%;
+            animation: launch 2s ease-in-out forwards, explode 1s ease-in-out 2s forwards;
+            pointer-events: none;
+        }
+
+        @keyframes launch {
+            0% {
+                bottom: 0;
+                left: 50%;
+                transform: translateX(-50%);
+                opacity: 1;
+            }
+            100% {
+                bottom: 50%;
+                left: 50%;
+                transform: translateX(-50%);
+                opacity: 1;
+            }
+        }
+
+        /* Explosions with multiple lines */
+        .explosion {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            background: radial-gradient(circle, rgba(255,255,255,1) 0%, rgba(255,255,255,0) 80%);
+            border-radius: 50%;
+            animation: burst 1s ease-out forwards;
+            pointer-events: none;
+        }
+
+        @keyframes burst {
+            0% { transform: scale(0); opacity: 1; }
+            100% { transform: scale(3); opacity: 0; }
+        }
+
+        .explosion-line {
+            position: absolute;
+            width: 2px;
+            height: 150px;
+            background-color: white;
+            transform-origin: 50%;
+            opacity: 0;
+            animation: line 1s ease-in-out forwards;
+        }
+
+        @keyframes line {
+            0% { transform: scaleY(0); opacity: 1; }
+            100% { transform: scaleY(1); opacity: 0; }
+        }
+
+    </style>
+</head>
+<body>
+    <!-- Add audio element -->
+    <audio id="background-music" loop>
+        <source src="music.mp3" type="audio/mpeg">
+        <source src="your-music-file.ogg" type="audio/ogg">
+        Your browser does not support the audio element.
+    </audio>
+
+    <h1 id="title">FRR HAPPY NEW YEAR! <br>🎉🎉<br> 🎊🎊🎊🎊</h1>
+
+    <!-- Box containing the hidden messages -->
+    <div class="messages-box" id="messages-container">
+        <p class="hidden-message" id="message1">I CAN'T HELP ...</p>
+        <p class="hidden-message" id="message2">FROM HERE ... </p>
+        <p class="hidden-message" id="message1">BUT  </p>
+        <p class="hidden-message" id="message2">I WILL TRY THO  </p>
+        <p class="hidden-message" id="message1">A55 WELCOME TO 2025</p>
+        <p class="hidden-message" id="message2">I HOPE FRR THAT WILL BE A GREAT ONE </p>
+        <p class="hidden-message" id="message3">...</p>
+        <p class="hidden-message" id="message4">As 2024 fades into memories—some sweet, some bitter</p>
+        <p class="hidden-message" id="message3"> A LOT OF SHI HAPPENED IN IT SO ...</p>
+        <p class="hidden-message" id="message3"> ILL SAY IT AGAIN </p>
+        <p class="hidden-message" id="message3"> DO NOT GIVE UP ON YOURSELF AND DO NOT GAF</p>
+        <p class="hidden-message" id="message3"> NEW YEAR NEW YOU ISNT ??? </p>
+        <p class="hidden-message" id="message3">  I know sometimes your mind can get caught in overthinking</p>
+        <p class="hidden-message" id="message3">  but it's part of what makes you so careful and thoughtful</p>
+        <p class="hidden-message" id="message3"> Don’t let that hold you back</p>
+        <p class="hidden-message" id="message3">  AND KEEP IT UP FR</p>
+        <p class="hidden-message" id="message3">Your ability to reflect and process is one of your strengths  </p>
+        <p class="hidden-message" id="message3"> but remember that not every moment requires deep analysis</p>
+        <p class="hidden-message" id="message3"> I OVERTHINK TOO BUT ...</p>
+        <p class="hidden-message" id="message3"> sometimes, the best thing you can do is trust yourself</p>
+        <p class="hidden-message" id="message3"> and take a step forward</p>
+        <p class="hidden-message" id="message3">with the confidence that you’re capable of handling whatever comes next </p>
+        <p class="hidden-message" id="message3"> OK OK AND </p>
+        <p class="hidden-message" id="message3">Your empathy is another gift I admire so much </p>
+        <p class="hidden-message" id="message3"> LIKE FRR </p>
+        <p class="hidden-message" id="message3"> You understand people in ways that not everyone can</p>
+        <p class="hidden-message" id="message3">and the ability to connect </p>
+        <p class="hidden-message" id="message3"> to really listen</p>
+        <p class="hidden-message" id="message3">and to make others feel seen  </p>
+        <p class="hidden-message" id="message3">is a rare and valuable trait </p>
+        <p class="hidden-message" id="message3"> WLKN SAFFF STOP IT </p>
+        <p class="hidden-message" id="message3">  now it’s time to focus on yourself a little more</p>
+        <p class="hidden-message" id="message3"> You’ve always been there for others</p>
+        <p class="hidden-message" id="message3"> and it’s time to remind yourself</p>
+        <p class="hidden-message" id="message3"> that you deserve the same care and attention</p>
+        <p class="hidden-message" id="message3"> IN MA POV </p>
+        <p class="hidden-message" id="message3"> your empathy is ONE OF your weaknesses </p>
+        <p class="hidden-message" id="message3">LIKE RA FRR  </p>
+        <p class="hidden-message" id="message3"> PPL don’t deserve it</p>
+        <p class="hidden-message" id="message3"> YOU CRIED LIKE ALOT THIS YEAR </p>
+        <p class="hidden-message" id="message3"> YOU'RE TIRED  </p>
+        <p class="hidden-message" id="message3">AND YOU NEED TO HEAL URSELF  </p>
+        <p class="hidden-message" id="message3"> SOO ...</p>
+        <p class="hidden-message" id="message3"> TRY JUST TRY </p>
+        <p class="hidden-message" id="message3"> TO Start this year fresh </p>
+        <p class="hidden-message" id="message3"> As a writer</p>
+        <p class="hidden-message" id="message3"> writing your life from the beginning</p>
+        <p class="hidden-message" id="message3">you’ve learned a lot  </p>
+        <p class="hidden-message" id="message3">and now it’s time to put that knowledge to use </p>
+        <p class="hidden-message" id="message3">REMEMBER   </p>
+        <p class="hidden-message" id="message3">WHENEVER YOU'RE TIRED AND AND SUFFERING </p>
+        <p class="hidden-message" id="message3"> IT'S NEVER TOO LATE TO BUILD SOMETHING NEW</p>
+        
+        <p class="hidden-message" id="message3"> WRITE YOUR NEXT CHAPTER...</p>
+        <p class="hidden-message" id="message3"> you reading while 2025 it started </p>
+        <p class="hidden-message" id="message3"> so make your first move </p>
+        <p class="hidden-message" id="message3">start this year with some things good that u like it </p>
+        <p class="hidden-message" id="message3"> write a wish list and lets try to make it real  </p>
+        
+        <p class="hidden-message" id="message3"> like frr </p>
+        <p class="hidden-message" id="message3">wlh knt knfkr fiha dik nhar  </p>
+        <p class="hidden-message" id="message3"> DNM JUST TRUST URSELF </p>
+        <p class="hidden-message" id="message3"> SOOO..</p>
+        <p class="hidden-message" id="message3"> HADI RA 4AM O GADA FY9 M3A 8 ; AN KMSSSSS</p>
+        
+        <p class="hidden-message" id="message3">SO LASTLY </p>
+        <p class="hidden-message" id="message3">I WOULD WISH U </p>
+        <p class="hidden-message" id="message3"> A VERY HAPPY NEW YEAR </p>
+        <p class="hidden-message" id="message3"> AWJH ZB HH</p>
+    </div>
+
+    <!-- Buttons container at the bottom -->
+    <div class="buttons-container">
+        <button class="play-btn visible" id="play-btn" onclick="playMusic()">Play 🎶</button>
+        <button class="message-btn hidden" id="message-btn" onclick="revealMessage()">Message for U</button>
+    </div>
+
+    <script>
+        function playMusic() {
+            const music = document.getElementById('background-music');
+            music.play(); // Start the music
+
+            // Firework animation
+            for (let i = 0; i < 7; i++) {
+                createFirework(i);
+            }
+
+            // Hide the play button with fade-out effect
+            const playButton = document.getElementById('play-btn');
+            playButton.classList.add('hidden');
+            setTimeout(() => playButton.style.display = 'none', 500); // Remove after fade-out
+
+            // Show the firework rocket animation
+            createRocket();
+
+            // Show the "Message for U" button after 7 seconds with fade-in effect
+            setTimeout(() => {
+                const messageButton = document.getElementById('message-btn');
+                messageButton.style.display = 'inline-block';
+                messageButton.classList.remove('hidden');
+                messageButton.classList.add('visible');
+            }, 7000); // 7 seconds delay
+        }
+
+        function createFirework(i) {
+            const firework = document.createElement('div');
+            firework.classList.add('firework');
+
+            // Randomize color
+            const colors = ['#ff0000', '#ff8000', '#ffff00', '#00ff00', '#0000ff', '#800080', '#ff1493'];
+            firework.style.backgroundColor = colors[i % colors.length];
+
+            // Randomize position
+            const size = Math.random() * 50 + 20; // Random size between 20 and 70px
+            const left = Math.random() * 100; // Random horizontal position
+            const top = Math.random() * 100;  // Random vertical position
+
+            firework.style.width = `${size}px`;
+            firework.style.height = `${size}px`;
+            firework.style.left = `${left}%`;
+            firework.style.top = `${top}%`;
+
+            document.body.appendChild(firework);
+
+            // Remove firework after animation
+            setTimeout(() => {
+                firework.remove();
+            }, 1000); // 1 second after firework starts
+        }
+
+        function createRocket() {
+            const rocket = document.createElement('div');
+            rocket.classList.add('rocket');
+            document.body.appendChild(rocket);
+
+            // Remove the rocket after explosion
+            setTimeout(() => {
+                rocket.remove();
+            }, 2000); // Rocket lasts for 2 seconds before exploding
+        }
+
+        function createExplosion() {
+            for (let i = 0; i < 30; i++) {
+                const explosion = document.createElement('div');
+                explosion.classList.add('explosion');
+
+                const left = Math.random() * 100;
+                const top = Math.random() * 100;
+
+                explosion.style.left = `${left}%`;
+                explosion.style.top = `${top}%`;
+                document.body.appendChild(explosion);
+
+                // Remove after 1 second
+                setTimeout(() => {
+                    explosion.remove();
+                }, 2000);
+            }
+        }
+
+        function revealMessage() {
+            const messages = document.querySelectorAll('.hidden-message');
+            let currentMessage = 0;
+
+            function showNextMessage() {
+                if (currentMessage < messages.length) {
+                    // Hide the previous message with fade-out effect if there was one
+                    if (currentMessage > 0) {
+                        messages[currentMessage - 1].classList.remove('visible');
+                        messages[currentMessage - 1].classList.add('disappear');
+                    }
+
+                    // Show the current message
+                    setTimeout(() => {
+                        messages[currentMessage].classList.remove('disappear');
+                        messages[currentMessage].classList.add('visible');
+                        currentMessage++;
+                    
+                        // Set a timeout to show the next message
+                        setTimeout(showNextMessage, 1500); // Adjust the timing here
+                    }, 1000); // Duration of the fade-out effect
+                }
+            }
+
+            // Hide the "Message for U" button and start showing messages
+            const messageButton = document.getElementById('message-btn');
+            messageButton.classList.add('hidden');
+            setTimeout(() => {
+                messageButton.style.display = 'none';
+                showNextMessage(); // Start the sequence
+            }, 500); // Hide button with a small delay for the fade-out effect
+        }
+    </script>
+</body>
+</html>
